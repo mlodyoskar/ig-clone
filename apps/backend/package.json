@@ -1,28 +1,29 @@
 {
-  "name": "docs",
+  "name": "backend",
   "version": "0.1.0",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3001",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint --max-warnings 0",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "workspace:*",
-    "next": "^15.4.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.2.0",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
     "@types/node": "^22.15.3",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
     "eslint": "^9.33.0",
+    "tsx": "^4.19.2",
     "typescript": "5.9.2"
   }
 }
