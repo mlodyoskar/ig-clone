@@ -59,9 +59,9 @@ jobs:
             --port 3000 \
             --memory 256Mi \
             --cpu 0.5 \
-            --max-instances 5 \
+            --max-instances 1 \
             --min-instances 0 \
-            --concurrency 80
+            --concurrency 1
 
       - name: Show deployment URL
         run: |
