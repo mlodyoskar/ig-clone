@@ -6,8 +6,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: europe-west1
-  REPOSITORY: ig-clone-repo
+  REGION: europe-central2
+  REPOSITORY: ig-clone-repository
   SERVICE_NAME: ig-clone-frontend
 
 jobs:
@@ -27,6 +27,14 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Create Docker repository if not exists
+        run: |
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Docker repository for ig-clone" \
+            --quiet || echo "Repository already exists"
 
       - name: Configure Docker for Artifact Registry
         run: |
