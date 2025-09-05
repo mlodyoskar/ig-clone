@@ -1,24 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+This is a [Next.js](https://nextjs.org) project in a Turborepo monorepo setup.
 
-## Getting Started
+## Development
 
-First, run the development server:
+For development, run locally with hot reload (recommended):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# From project root
 pnpm dev
-# or
-bun dev
+
+# Or run only the web app
+pnpm --filter web dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+## Production (Docker)
+
+For production deployment, use Docker:
+
+```bash
+# Build the image (from project root)
+docker build -f apps/web/Dockerfile -t ig-clone-frontend .
+
+# Run the container
+docker run -p 3000:3000 ig-clone-frontend
+```
+
+The Docker build uses Turborepo's `prune` feature to create an optimized image with only the necessary dependencies.
+
+## 🚀 GCP Cloud Run Deployment
+
+### Quick Deploy
+
+```bash
+# Set your GCP project ID
+export GCP_PROJECT_ID="your-project-id"
+
+# Run deployment script
+./deploy.sh
+```
+
+### Manual Deploy
+
+```bash
+# 1. Build and push to Artifact Registry
+docker build -f apps/web/Dockerfile \
+  -t europe-west1-docker.pkg.dev/YOUR_PROJECT_ID/ig-clone-repo/ig-clone-frontend:latest .
+
+gcloud auth configure-docker europe-west1-docker.pkg.dev
+docker push europe-west1-docker.pkg.dev/YOUR_PROJECT_ID/ig-clone-repo/ig-clone-frontend:latest
+
+# 2. Deploy to Cloud Run
+gcloud run deploy ig-clone-frontend \
+  --image europe-west1-docker.pkg.dev/YOUR_PROJECT_ID/ig-clone-repo/ig-clone-frontend:latest \
+  --platform managed \
+  --region europe-west1 \
+  --allow-unauthenticated \
+  --port 3000
+```
+
+### CI/CD with GitHub Actions
+
+The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically deploys on push to main branch.
+
+**Required secrets:**
+
+- `GCP_PROJECT_ID`: Your Google Cloud project ID
+- `GCP_SA_KEY`: Service account key JSON (base64 encoded)
 
 ## Learn More
 

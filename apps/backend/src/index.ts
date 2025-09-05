@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 
@@ -9,8 +9,18 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(helmet()); // Zabezpieczenia
-app.use(cors()); // CORS
-app.use(express.json()); // Parser JSON
+
+// Konfiguracja CORS z ograniczeniami bezpieczeństwa
+const corsOptions: CorsOptions = {
+  origin: ["http://localhost:3000", "http://localhost:3001"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/health", (req, res) => {
