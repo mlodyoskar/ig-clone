@@ -13,7 +13,7 @@ RUN corepack prepare pnpm@10.15.1 --activate
 WORKDIR /app
 RUN pnpm add -g turbo@^2
 COPY . .
-RUN turbo prune backend --docker
+RUN turbo prune api --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -38,11 +38,11 @@ FROM base AS runner
 WORKDIR /app
 
 
-RUN addgroup --system --gid 1001 expressjs
-RUN adduser --system --uid 1001 expressjs
-USER expressjs
+RUN addgroup --system --gid 1001 hono
+RUN adduser --system --uid 1001 hono
+USER hono
 COPY --from=installer /app .
 
-EXPOSE 4000
+EXPOSE 8080
 
-CMD ["node", "apps/backend/dist/index.js"]
+CMD ["node", "apps/api/dist/index.js"]

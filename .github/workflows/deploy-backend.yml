@@ -15,7 +15,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: europe-central2
   REPOSITORY: ig-clone-repository
-  SERVICE_NAME: ig-clone-backend
+  SERVICE_NAME: ig-clone-api
 
 jobs:
   deploy:
@@ -54,7 +54,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/backend/Dockerfile
+          file: apps/api/Dockerfile
           push: true
           tags: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           cache-from: type=gha
@@ -67,7 +67,7 @@ jobs:
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
-            --port 4000 \
+            --port 8080 \
             --memory 512Mi \
             --cpu 1 \
             --max-instances 1 \
